@@ -62,6 +62,6 @@ Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arqui
 ## Instrucciones de ejecución
 
 1. Clona el repositorio:
-   git clone https://github.com/USERNAME/KDramasManager.git
+   git clone https://github.com/catherinepinilla13g/KDramasManager.git
 2. Abre el proyecto en Android Studio Narwhal.
 3. Compila y ejecuta la aplicación en un dispositivo Android con acceso a internet.
