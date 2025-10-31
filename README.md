@@ -57,7 +57,20 @@ Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arqui
 - `drawable/`: Fondos, bordes e íconos  
 - `AndroidManifest.xml`: Declaración de actividades y permisos  
 
----
+### Dependencias adicionales utilizadas
+La aplicación utiliza las siguientes bibliotecas gestionadas mediante Gradle:
+
+- androidx.recyclerview:recyclerview
+
+- androidx.cardview:cardview
+
+- androidx.lifecycle:lifecycle-viewmodel-ktx
+
+- androidx.lifecycle:lifecycle-livedata-ktx
+
+- androidx.lifecycle:lifecycle-common-java8
+
+- com.github.bumptech.glide:glide
 
 ## Instrucciones de ejecución
 
