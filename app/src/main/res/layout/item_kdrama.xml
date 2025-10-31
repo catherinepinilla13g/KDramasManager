@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout para cada tarjeta individual que representa un K-Drama en el RecyclerView.
+
+    Estructura:
+    - CardView con estilo elevado y esquinas redondeadas.
+    - Imagen del K-Drama a la izquierda.
+    - Información textual a la derecha: título, género, año, capítulos, estado y calificación.
+
+    Responsabilidades:
+    - Mostrar los datos resumidos de un K-Drama en la lista.
+    - Facilitar la interacción visual con estilo compacto y legible.
+-->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <!-- Contenedor principal horizontal con fondo personalizado -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@drawable/card_bg">
+
+        <!-- Imagen del K-Drama con estilo centrado y borde decorativo -->
+        <ImageView
+            android:id="@+id/imgKdrama"
+            android:layout_width="80dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/image_border"
+            android:contentDescription="Imagen del K-Drama" />
+
+        <!-- Contenedor vertical para los datos textuales del K-Drama -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+
+            <!-- Título del K-Drama en estilo destacado, truncado si excede una línea -->
+            <TextView
+                android:id="@+id/txtTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título del K-Drama"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Género del K-Drama en estilo secundario -->
+            <TextView
+                android:id="@+id/txtGenero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Género"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginTop="4dp" />
+
+            <!-- Fila horizontal con año de emisión y número de capítulos -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/txtAnio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2024"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/txtCapitulos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • 16 capítulos"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginStart="4dp" />
+
+            </LinearLayout>
+
+            <!-- Estado de visionado (ej. Viendo, Completado) con estilo visual distintivo -->
+            <TextView
+                android:id="@+id/txtEstado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Viendo"
+                android:textSize="12sp"
+                android:textColor="@color/purple_500"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/estado_background"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp" />
+
+            <!-- Calificación del K-Drama mediante RatingBar en modo solo lectura -->
+            <RatingBar
+                android:id="@+id/ratingCalificacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:rating="3"
+                android:isIndicator="true"
+                android:progressTint="@color/orange_700"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

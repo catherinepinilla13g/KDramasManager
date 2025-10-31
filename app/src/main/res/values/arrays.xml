@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="generos_kdrama">
+        <item>Romance</item>
+        <item>Comedia Romántica</item>
+        <item>Drama</item>
+        <item>Thriller</item>
+        <item>Misterio</item>
+        <item>Fantasía</item>
+        <item>Histórico</item>
+        <item>Acción</item>
+        <item>Aventura</item>
+        <item>Ciencia Ficción</item>
+        <item>Medicina</item>
+        <item>Legal</item>
+        <item>Escolar</item>
+        <item>Suspenso</item>
+        <item>Familiar</item>
+        <item>Musical</item>
+        <item>Comedia</item>
+    </string-array>
+
+    <string-array name="estados_visionado">
+        <item>Viendo</item>
+        <item>Completado</item>
+        <item>Pendiente</item>
+        <item>En pausa</item>
+        <item>Abandonado</item>
+        <item>Reviendo</item>
+    </string-array>
+</resources>

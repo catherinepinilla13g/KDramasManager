@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout para la actividad que muestra la lista de K-Dramas registrados.
+
+    Estructura:
+    - Toolbar superior con título y navegación.
+    - RecyclerView para mostrar los datos en forma de lista.
+    - Vista alternativa para estado vacío cuando no hay datos disponibles.
+
+    Responsabilidades:
+    - Mostrar los K-Dramas en una lista eficiente.
+    - Indicar visualmente cuando no hay registros.
+    - Permitir navegación hacia atrás mediante la toolbar.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <!-- Toolbar superior con título estático y estilo oscuro -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_500"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lista_de_k_dramas"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- RecyclerView para mostrar la lista de K-Dramas.
+     Inicialmente oculto hasta que se reciban datos desde el ViewModel. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerKdramas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:visibility="gone" />
+
+    <!-- Layout para estado vacío.
+     Se muestra cuando la lista está vacía o no hay datos disponibles. -->
+    <LinearLayout
+        android:id="@+id/layoutEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="40dp"
+        android:visibility="visible">
+
+        <!-- Icono ilustrativo para estado vacío -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_kdrama_default"
+            android:contentDescription="@string/lista_vacia"
+            app:tint="@color/text_secondary" />
+
+        <!-- Mensaje principal que indica que no hay K-Dramas registrados -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lista_vacia"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="20dp" />
+
+        <!-- Instrucción secundaria que sugiere agregar el primer K-Drama -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/agregar_primer_kdrama"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

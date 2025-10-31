@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">K-Dramas Manager</string>
+    <string name="app_logo">Logo de K-Drama Manager</string>
+    <string name="app_tagline">Gestiona tu colección de dramas coreanos</string>
+
+    <string name="guardar">Guardar</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="volver">Volver</string>
+    <string name="ver_lista">Ver Lista</string>
+
+    <string name="lista_vacia">No hay K-Dramas registrados</string>
+    <string name="agregar_primer_kdrama">Agrega tu primer K-Drama para comenzar</string>
+
+    <string name="titulo">Título</string>
+    <string name="genero">Género</string>
+    <string name="anio">Año</string>
+    <string name="capitulos">Capítulos</string>
+    <string name="calificacion">Calificación</string>
+    <string name="estado">Estado</string>
+    <string name="imagen_url">URL de Imagen</string>
+
+    <string name="operacion_exitosa">Operación completada exitosamente</string>
+    <string name="error_guardar">Error al guardar el K-Drama</string>
+    <string name="error_actualizar">Error al actualizar el K-Drama</string>
+    <string name="error_eliminar">Error al eliminar el K-Drama</string>
+    <string name="lista_de_k_dramas">Lista de K-Dramas</string>
+    <string name="editar_k_drama">Editar K-Drama</string>
+    <string name="t_tulo_del_k_drama">Título del K-Drama</string>
+</resources>

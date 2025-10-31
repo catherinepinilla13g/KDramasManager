@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permiso necesario para cargar imágenes desde URLs externas -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.KDramasManager">
+
+        <!-- SplashActivity: Pantalla de bienvenida que inicia la aplicación -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.Splash">
+            <intent-filter>
+                <!-- Define esta actividad como punto de entrada de la app -->
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- MainActivity: Formulario para registrar nuevos K-Dramas -->
+        <activity android:name=".MainActivity" />
+
+        <!-- ListarKdramas: Muestra la lista de K-Dramas registrados -->
+        <activity android:name=".ListarKdramas" />
+
+        <!-- EditarKdrama: Permite modificar o eliminar un K-Drama existente -->
+        <activity android:name=".EditarKdrama" />
+
+    </application>
+
+</manifest>
