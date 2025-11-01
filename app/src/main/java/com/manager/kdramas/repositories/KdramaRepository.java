@@ -30,7 +30,7 @@ public class KdramaRepository {
      * @param context Contexto de la aplicación.
      */
     public KdramaRepository(Context context) {
-        this.context = context.getApplicationContext(); // Evita memory leaks
+        this.context = context.getApplicationContext(); 
         this.dbHelper = new DBHelper(this.context);
     }
 
