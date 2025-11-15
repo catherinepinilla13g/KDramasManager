@@ -1,9 +1,9 @@
-# K-Dramas Manager
+# K-Dramas Manager (rama KDramasManagerNew)
 
 Aplicación Android que permite registrar, visualizar, editar y eliminar K-Dramas.  
 Cada entrada incluye información como título, género, año de emisión, número de capítulos, calificación, estado de visionado y URL de imagen.  
-Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arquitectura MVVM**.
-
+Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arquitectura MVVM**.  
+En esta rama (`KDramasManagerNew`), además, los datos se sincronizan con **Firebase Firestore** cuando hay conexión a internet.
 
 ## Funcionalidades
 
@@ -14,9 +14,10 @@ Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arqui
 - Calificación con RatingBar  
 - Carga de imágenes desde URL  
 - Persistencia local con SQLite  
+- **Sincronización en la nube con Firebase Firestore**  
+- **Verificación de conectividad con `NetworkUtils`**  
 - Navegación entre pantallas con Intents  
 - Manejo de estados vacíos cuando no hay registros  
-
 
 ## Requisitos
 
@@ -26,6 +27,8 @@ Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arqui
 - **SDK objetivo:** 36  
 - **Java:** 11  
 - **Permiso de acceso a internet** habilitado en el dispositivo  
+- Proyecto configurado en Firebase con **Firestore Database habilitado**  
+- Archivo `google-services.json` en la carpeta `app/`  
 
 ## Estructura del proyecto
 
@@ -37,10 +40,11 @@ Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arqui
 
 ### Componentes adicionales
 - `KdramaViewModel.java`: Lógica de presentación  
-- `KdramaRepository.java`: Acceso a datos  
+- `KdramaRepository.java`: Acceso a datos (SQLite + Firebase Firestore)  
 - `DBHelper.java`: Gestión de base de datos SQLite  
 - `KdramaAdapter.java`: Adaptador para RecyclerView  
 - `Kdrama.java`: Modelo de datos  
+- `NetworkUtils.java`: Utilidad para verificar conexión a internet  
 
 ### Layouts
 - `activity_main.xml`: Formulario de registro  
@@ -60,21 +64,29 @@ Los datos se almacenan localmente mediante **SQLite** y se gestionan con **arqui
 ### Dependencias adicionales utilizadas
 La aplicación utiliza las siguientes bibliotecas gestionadas mediante Gradle:
 
-- androidx.recyclerview:recyclerview
-
-- androidx.cardview:cardview
-
-- androidx.lifecycle:lifecycle-viewmodel-ktx
-
-- androidx.lifecycle:lifecycle-livedata-ktx
-
-- androidx.lifecycle:lifecycle-common-java8
-
-- com.github.bumptech.glide:glide
+- `androidx.recyclerview:recyclerview`  
+- `androidx.cardview:cardview`  
+- `androidx.lifecycle:lifecycle-viewmodel-ktx`  
+- `androidx.lifecycle:lifecycle-livedata-ktx`  
+- `androidx.lifecycle:lifecycle-common-java8`  
+- `com.github.bumptech.glide:glide`  
+- `com.google.firebase:firebase-firestore`  
+- `com.google.firebase:firebase-database`  
 
 ## Instrucciones de ejecución
 
+```bash
 1. Clona el repositorio:
    git clone https://github.com/catherinepinilla13g/KDramasManager.git
-2. Abre el proyecto en Android Studio Narwhal.
-3. Compila y ejecuta la aplicación en un dispositivo Android con acceso a internet.
+
+2. Cambia a la rama KDramasManagerNew:
+   git checkout KDramasManagerNew
+
+3. Abre el proyecto en Android Studio Narwhal.
+
+4. Coloca el archivo google-services.json en la carpeta app/.
+
+5. Compila y ejecuta la aplicación en un dispositivo Android con acceso a internet.
+
+6. Verifica los datos en la consola de Firebase → Firestore Database.
+
