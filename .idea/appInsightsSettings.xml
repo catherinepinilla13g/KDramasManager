@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.manager.kdramas" />
+                  <option name="mobileSdkAppId" value="1:461041221300:android:6107faecfeccd32d14e1e1" />
+                  <option name="projectId" value="kdramasmanager" />
+                  <option name="projectNumber" value="461041221300" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

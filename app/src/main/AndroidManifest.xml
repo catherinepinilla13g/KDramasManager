@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KDramasManager">
 
-        <!-- SplashActivity: Pantalla de bienvenida que inicia la aplicación -->
+    <!-- SplashActivity: Pantalla de bienvenida que inicia la aplicación -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"

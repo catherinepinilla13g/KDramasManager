@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "461041221300",
+    "project_id": "kdramasmanager",
+    "storage_bucket": "kdramasmanager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461041221300:android:6107faecfeccd32d14e1e1",
+        "android_client_info": {
+          "package_name": "com.manager.kdramas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeVzkwJs_EdWp1Mv1n9F_XSbGAY6VniqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
