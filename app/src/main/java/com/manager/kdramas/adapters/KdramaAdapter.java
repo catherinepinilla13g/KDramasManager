@@ -1,9 +1,13 @@
 package com.manager.kdramas.adapters;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -17,7 +21,7 @@ import java.util.List;
 
 /**
  * Adaptador para mostrar una lista de K-Dramas en un RecyclerView.
-
+ *
  * Responsabilidades:
  * - Renderizar datos del ViewModel en la interfaz.
  * - Delegar eventos de interacción al componente que lo contiene (Activity o Fragment).
@@ -53,14 +57,6 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
         this.listener = listener;
     }
 
-    /**
-     * Infla el layout XML correspondiente a un item de K-Drama.
-     * Invocado por el RecyclerView para crear nuevos ViewHolders.
-
-     * @param parent ViewGroup padre donde se insertará el nuevo item.
-     * @param viewType Tipo de vista (no utilizado en este caso).
-     * @return ViewHolder con las vistas inicializadas.
-     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,34 +65,17 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
-    /**
-     * Asocia los datos del modelo con el ViewHolder correspondiente.
-     *
-     * @param holder ViewHolder que representa el item.
-     * @param position Posición del item en la lista.
-     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Kdrama kdrama = listaKdramas.get(position);
         holder.enlazarDatos(kdrama, listener);
     }
 
-    /**
-     * Retorna la cantidad de elementos en la lista.
-     * Utilizado por el RecyclerView para determinar cuántos items renderizar.
-     *
-     * @return Número total de K-Dramas en la lista.
-     */
     @Override
     public int getItemCount() {
         return listaKdramas.size();
     }
 
-    /**
-     * Reemplaza la lista actual de K-Dramas por una nueva y actualiza la vista.
-     *
-     * @param nuevaLista Nueva lista de K-Dramas a mostrar.
-     */
     public void actualizarLista(List<Kdrama> nuevaLista) {
         this.listaKdramas.clear();
         this.listaKdramas.addAll(nuevaLista);
@@ -113,20 +92,13 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
         private ImageView imgKdrama;
         private TextView txtTitulo, txtGenero, txtAnio, txtCapitulos, txtEstado;
         private RatingBar ratingCalificacion;
+        private ImageButton btnNetflix, btnTrailer; // nuevos iconos
 
-        /**
-         * Constructor del ViewHolder.
-         *
-         * @param itemView Vista raíz del item inflado desde XML.
-         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             inicializarViews();
         }
 
-        /**
-         * Inicializa las referencias a las vistas del layout.
-         */
         private void inicializarViews() {
             imgKdrama = itemView.findViewById(R.id.imgKdrama);
             txtTitulo = itemView.findViewById(R.id.txtTitulo);
@@ -135,27 +107,20 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
             txtCapitulos = itemView.findViewById(R.id.txtCapitulos);
             txtEstado = itemView.findViewById(R.id.txtEstado);
             ratingCalificacion = itemView.findViewById(R.id.ratingCalificacion);
+
+            // Inicializar botones de iconos
+            btnNetflix = itemView.findViewById(R.id.btnNetflix);
+            btnTrailer = itemView.findViewById(R.id.btnTrailer);
         }
 
-        /**
-         * Asocia los datos del modelo Kdrama con las vistas del item.
-         * También configura el evento de clic para notificar al listener.
-         *
-         * @param kdrama Instancia del modelo Kdrama a mostrar.
-         * @param listener Listener que maneja el clic sobre el item.
-         */
         public void enlazarDatos(Kdrama kdrama, OnItemClickListener listener) {
             establecerTextos(kdrama);
             cargarImagen(kdrama.getImagenUrl());
             configurarCalificacion(kdrama.getCalificacion());
             configurarClick(kdrama, listener);
+            configurarAccionesExternas(kdrama); // nuevo
         }
 
-        /**
-         * Establece los textos en las vistas del item.
-         *
-         * @param kdrama K-Drama con los datos a mostrar.
-         */
         private void establecerTextos(Kdrama kdrama) {
             txtTitulo.setText(kdrama.getTitulo());
             txtGenero.setText(kdrama.getGenero());
@@ -164,12 +129,6 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
             txtEstado.setText(kdrama.getEstadoLegible());
         }
 
-        /**
-         * Carga la imagen del K-Drama usando Glide.
-         * Si la URL es inválida, se muestra una imagen por defecto.
-         *
-         * @param imagenUrl URL de la imagen a cargar.
-         */
         private void cargarImagen(String imagenUrl) {
             if (imagenUrl != null && !imagenUrl.trim().isEmpty()) {
                 Glide.with(itemView.getContext())
@@ -183,12 +142,6 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
             }
         }
 
-        /**
-         * Establece la calificación en el RatingBar.
-         * Si el valor no es numérico, se asigna 0 por defecto.
-         *
-         * @param calificacion Calificación en formato String.
-         */
         private void configurarCalificacion(String calificacion) {
             try {
                 float rating = Float.parseFloat(calificacion);
@@ -198,22 +151,40 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
             }
         }
 
-        /**
-         * Configura el evento de clic sobre el item.
-         * Notifica al listener con el K-Drama asociado.
-         *
-         * @param kdrama Instancia del modelo Kdrama.
-         * @param listener Listener que gestiona el evento de clic.
-         */
         private void configurarClick(Kdrama kdrama, OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        listener.onItemClick(kdrama);
-                    }
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(kdrama);
+                }
+            });
+        }
+
+        /**
+         * Configura los iconos de plataforma y trailer para abrir URLs externas.
+         *
+         * @param kdrama Instancia del modelo Kdrama con las URLs.
+         */
+        private void configurarAccionesExternas(Kdrama kdrama) {
+            Context context = itemView.getContext();
+
+            // Abrir plataforma (ej. Netflix)
+            btnNetflix.setOnClickListener(v -> {
+                String urlPlataforma = kdrama.getUrlPlataforma();
+                if (urlPlataforma != null && !urlPlataforma.isEmpty()) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPlataforma));
+                    context.startActivity(intent);
+                }
+            });
+
+            // Abrir trailer (ej. YouTube)
+            btnTrailer.setOnClickListener(v -> {
+                String urlTrailer = kdrama.getUrlTrailer();
+                if (urlTrailer != null && !urlTrailer.isEmpty()) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlTrailer));
+                    context.startActivity(intent);
                 }
             });
         }
     }
 }
+

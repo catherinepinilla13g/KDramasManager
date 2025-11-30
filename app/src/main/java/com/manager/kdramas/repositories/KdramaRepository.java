@@ -77,14 +77,17 @@ public class KdramaRepository {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         try {
-            db.execSQL("INSERT INTO kdrama (titulo, genero, anio, capitulos, calificacion, imagen_url) VALUES (?, ?, ?, ?, ?, ?)",
+            db.execSQL("INSERT INTO kdrama (titulo, genero, anio, capitulos, calificacion, finalizado, imagen_url, url_plataforma, url_trailer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     new Object[]{
                             kdrama.getTitulo(),
                             kdrama.getGenero(),
                             Integer.parseInt(kdrama.getAnio()),
                             Integer.parseInt(kdrama.getCapitulos()),
                             Float.parseFloat(kdrama.getCalificacion()),
-                            kdrama.getImagenUrl()
+                            kdrama.getFinalizado(),
+                            kdrama.getImagenUrl(),
+                            kdrama.getUrlPlataforma(),
+                            kdrama.getUrlTrailer()
                     });
 
             try (Cursor cursor = db.rawQuery("SELECT last_insert_rowid()", null)) {
@@ -108,43 +111,6 @@ public class KdramaRepository {
         }
 
         return id;
-    }
-
-    public int actualizarKdrama(Kdrama kdrama) {
-        int filas = 0;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        try {
-            db.execSQL("UPDATE kdrama SET titulo=?, genero=?, anio=?, capitulos=?, calificacion=?, finalizado=?, imagen_url=? WHERE id=?",
-                    new Object[]{
-                            kdrama.getTitulo(),
-                            kdrama.getGenero(),
-                            Integer.parseInt(kdrama.getAnio()),
-                            Integer.parseInt(kdrama.getCapitulos()),
-                            Float.parseFloat(kdrama.getCalificacion()),
-                            kdrama.getFinalizado(),
-                            kdrama.getImagenUrl(),
-                            Integer.parseInt(kdrama.getId())
-                    });
-
-            try (Cursor cursor = db.rawQuery("SELECT changes()", null)) {
-                if (cursor.moveToFirst()) filas = cursor.getInt(0);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar K-Drama: " + e.getMessage());
-        } finally {
-            if (db != null && db.isOpen()) db.close();
-        }
-
-        if (NetworkUtils.isConnected(context)) {
-            firestore.collection("kdramas")
-                    .document(kdrama.getId())
-                    .set(kdrama, SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> Log.d("Repo", "Actualizado en Firebase"))
-                    .addOnFailureListener(e -> Log.w("Repo", "Error al actualizar en Firebase", e));
-        }
-
-        return filas;
     }
 
     public int eliminarKdrama(String id) {
@@ -174,6 +140,45 @@ public class KdramaRepository {
         return filas;
     }
 
+    public int actualizarKdrama(Kdrama kdrama) {
+        int filas = 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        try {
+            db.execSQL("UPDATE kdrama SET titulo=?, genero=?, anio=?, capitulos=?, calificacion=?, finalizado=?, imagen_url=?, url_plataforma=?, url_trailer=? WHERE id=?",
+                    new Object[]{
+                            kdrama.getTitulo(),
+                            kdrama.getGenero(),
+                            Integer.parseInt(kdrama.getAnio()),
+                            Integer.parseInt(kdrama.getCapitulos()),
+                            Float.parseFloat(kdrama.getCalificacion()),
+                            kdrama.getFinalizado(),
+                            kdrama.getImagenUrl(),
+                            kdrama.getUrlPlataforma(),
+                            kdrama.getUrlTrailer(),
+                            Integer.parseInt(kdrama.getId())
+                    });
+
+            try (Cursor cursor = db.rawQuery("SELECT changes()", null)) {
+                if (cursor.moveToFirst()) filas = cursor.getInt(0);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar K-Drama: " + e.getMessage());
+        } finally {
+            if (db != null && db.isOpen()) db.close();
+        }
+
+        if (NetworkUtils.isConnected(context)) {
+            firestore.collection("kdramas")
+                    .document(kdrama.getId())
+                    .set(kdrama, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> Log.d("Repo", "Actualizado en Firebase"))
+                    .addOnFailureListener(e -> Log.w("Repo", "Error al actualizar en Firebase", e));
+        }
+
+        return filas;
+    }
+
     private Kdrama mapearCursorAKdrama(Cursor cursor) {
         Kdrama kdrama = new Kdrama();
         kdrama.setId(cursor.getString(cursor.getColumnIndexOrThrow("id")));
@@ -184,6 +189,8 @@ public class KdramaRepository {
         kdrama.setCalificacion(cursor.getString(cursor.getColumnIndexOrThrow("calificacion")));
         kdrama.setFinalizado(cursor.getString(cursor.getColumnIndexOrThrow("finalizado")));
         kdrama.setImagenUrl(cursor.getString(cursor.getColumnIndexOrThrow("imagen_url")));
+        kdrama.setUrlPlataforma(cursor.getString(cursor.getColumnIndexOrThrow("url_plataforma")));
+        kdrama.setUrlTrailer(cursor.getString(cursor.getColumnIndexOrThrow("url_trailer")));
         return kdrama;
     }
 }

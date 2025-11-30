@@ -35,6 +35,8 @@ public class EditarKdrama extends AppCompatActivity {
     private RatingBar ratingCalificacion;
     private Button btnActualizar, btnEliminar, btnVolver;
 
+    private EditText edUrlPlataforma, edUrlTrailer;
+
     // ViewModel que gestiona la lógica de presentación
     private KdramaViewModel kdramaViewModel;
 
@@ -107,6 +109,8 @@ public class EditarKdrama extends AppCompatActivity {
         edAnio = findViewById(R.id.edAnio);
         edCapitulos = findViewById(R.id.edCapitulos);
         edImagenUrl = findViewById(R.id.edImagenUrl);
+        edUrlPlataforma = findViewById(R.id.edUrlPlataforma);
+        edUrlTrailer = findViewById(R.id.edUrlTrailer);
         spnGenero = findViewById(R.id.spnGenero);
         spnEstado = findViewById(R.id.spnEstado);
         ratingCalificacion = findViewById(R.id.ratingCalificacion);
@@ -145,6 +149,8 @@ public class EditarKdrama extends AppCompatActivity {
         kdramaActual.setCalificacion(intent.getStringExtra("calificacion"));
         kdramaActual.setFinalizado(intent.getStringExtra("finalizado"));
         kdramaActual.setImagenUrl(intent.getStringExtra("imagen_url"));
+        kdramaActual.setUrlPlataforma(intent.getStringExtra("url_plataforma"));
+        kdramaActual.setUrlTrailer(intent.getStringExtra("url_trailer"));
 
         poblarUIConDatos();
     }
@@ -160,6 +166,8 @@ public class EditarKdrama extends AppCompatActivity {
         edAnio.setText(kdramaActual.getAnio());
         edCapitulos.setText(kdramaActual.getCapitulos());
         edImagenUrl.setText(kdramaActual.getImagenUrl());
+        edUrlPlataforma.setText(kdramaActual.getUrlPlataforma());
+        edUrlTrailer.setText(kdramaActual.getUrlTrailer());
 
         try {
             float calificacion = Float.parseFloat(kdramaActual.getCalificacion());
@@ -230,6 +238,8 @@ public class EditarKdrama extends AppCompatActivity {
         String anio = edAnio.getText().toString().trim();
         String capitulos = edCapitulos.getText().toString().trim();
         String imagenUrl = edImagenUrl.getText().toString().trim();
+        String urlPlataforma = edUrlPlataforma.getText().toString().trim();
+        String urlTrailer = edUrlTrailer.getText().toString().trim();
         float calificacion = ratingCalificacion.getRating();
         String finalizado = String.valueOf(spnEstado.getSelectedItemPosition());
 
@@ -243,6 +253,8 @@ public class EditarKdrama extends AppCompatActivity {
         kdramaActual.setAnio(anio);
         kdramaActual.setCapitulos(capitulos);
         kdramaActual.setImagenUrl(imagenUrl);
+        kdramaActual.setUrlPlataforma(urlPlataforma);
+        kdramaActual.setUrlTrailer(urlTrailer);
         kdramaActual.setCalificacion(String.valueOf(calificacion));
         kdramaActual.setFinalizado(finalizado);
 

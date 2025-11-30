@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
     <!-- Permiso necesario para cargar imágenes desde URLs externas -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,28 +12,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KDramasManager">
-
-    <!-- SplashActivity: Pantalla de bienvenida que inicia la aplicación -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ContactActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <!--
+         SplashActivity: Pantalla de bienvenida que inicia la aplicación.
+             Después del splash, navega directamente a ListarKdramas
+        -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
-                <!-- Define esta actividad como punto de entrada de la app -->
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- MainActivity: Formulario para registrar nuevos K-Dramas -->
-        <activity android:name=".MainActivity" />
-
-        <!-- ListarKdramas: Muestra la lista de K-Dramas registrados -->
-        <activity android:name=".ListarKdramas" />
-
-        <!-- EditarKdrama: Permite modificar o eliminar un K-Drama existente -->
+        </activity> <!-- MainActivity: Formulario para registrar nuevos K-Dramas -->
+        <activity android:name=".MainActivity" /> <!-- ListarKdramas: Pantalla principal tras el splash, muestra la lista de K-Dramas registrados -->
+        <activity android:name=".ListarKdramas" /> <!-- EditarKdrama: Permite modificar o eliminar un K-Drama existente -->
         <activity android:name=".EditarKdrama" />
-
     </application>
 
 </manifest>

@@ -160,6 +160,36 @@
                             android:inputType="textUri" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- URL de plataforma -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edUrlPlataforma"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="URL de plataforma (Netflix, Viki, etc.)"
+                            android:inputType="textUri" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- URL de trailer -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edUrlTrailer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="URL del trailer (YouTube, etc.)"
+                            android:inputType="textUri" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                     <!-- Selector de estado de visionado mediante Spinner -->
                     <LinearLayout
                         android:layout_width="match_parent"

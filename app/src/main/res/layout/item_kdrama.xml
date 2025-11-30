@@ -6,13 +6,16 @@
     - CardView con estilo elevado y esquinas redondeadas.
     - Imagen del K-Drama a la izquierda.
     - Información textual a la derecha: título, género, año, capítulos, estado y calificación.
+    - Fila adicional con iconos que permiten redirigir a plataformas y trailers.
 
     Responsabilidades:
     - Mostrar los datos resumidos de un K-Drama en la lista.
     - Facilitar la interacción visual con estilo compacto y legible.
+    - Permitir acceso rápido a plataformas de streaming y trailers mediante iconos.
 -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -35,7 +38,7 @@
             android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:background="@drawable/image_border"
-            android:contentDescription="Imagen del K-Drama" />
+            android:contentDescription="@string/imagen_del_k_drama" />
 
         <!-- Contenedor vertical para los datos textuales del K-Drama -->
         <LinearLayout
@@ -43,14 +46,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingStart="16dp">
+            android:paddingStart="16dp"
+            tools:ignore="RtlSymmetry">
 
             <!-- Título del K-Drama en estilo destacado, truncado si excede una línea -->
             <TextView
                 android:id="@+id/txtTitulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Título del K-Drama"
+                android:text="@string/t_tulo_del_k_drama2"
                 android:textSize="16sp"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
@@ -62,7 +66,7 @@
                 android:id="@+id/txtGenero"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Género"
+                android:text="@string/g_nero"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:layout_marginTop="4dp" />
@@ -78,7 +82,7 @@
                     android:id="@+id/txtAnio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2024"
+                    android:text="@string/_2024"
                     android:textSize="12sp"
                     android:textColor="@color/text_secondary" />
 
@@ -86,11 +90,10 @@
                     android:id="@+id/txtCapitulos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" • 16 capítulos"
+                    android:text="@string/_16_cap_tulos"
                     android:textSize="12sp"
                     android:textColor="@color/text_secondary"
                     android:layout_marginStart="4dp" />
-
             </LinearLayout>
 
             <!-- Estado de visionado (ej. Viendo, Completado) con estilo visual distintivo -->
@@ -98,7 +101,7 @@
                 android:id="@+id/txtEstado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Viendo"
+                android:text="@string/viendo"
                 android:textSize="12sp"
                 android:textColor="@color/purple_500"
                 android:textStyle="bold"
@@ -119,8 +122,35 @@
                 android:progressTint="@color/orange_700"
                 android:layout_marginTop="8dp" />
 
+            <!-- Fila de iconos para redirección a plataformas y trailers -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- Icono de plataforma (ej. Netflix) -->
+                <ImageButton
+                    android:id="@+id/btnNetflix"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_plataforma"
+                    android:contentDescription="@string/ver_en_netflix"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp" />
+
+                <!-- Icono de trailer (ej. YouTube) -->
+                <ImageButton
+                    android:id="@+id/btnTrailer"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_trailer"
+                    android:contentDescription="@string/ver_trailer"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
         </LinearLayout>
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>
