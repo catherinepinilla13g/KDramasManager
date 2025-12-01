@@ -13,6 +13,9 @@ import com.manager.kdramas.model.ChatMessage;
 
 import java.util.List;
 
+/**
+ * ChatAdapter - Adaptador para mostrar mensajes en el RecyclerView del chat.
+ */
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
     private List<ChatMessage> mensajes;
@@ -32,8 +35,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         ChatMessage msg = mensajes.get(position);
-        holder.user.setText(msg.displayName);   
-        holder.message.setText(msg.text);       
+        holder.user.setText(msg.displayName);   // txtUser en item_chat_message.xml
+        holder.message.setText(msg.text);       // txtMessage en item_chat_message.xml
     }
 
     @Override
@@ -41,6 +44,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         return mensajes != null ? mensajes.size() : 0;
     }
 
+    /**
+     * Actualiza la lista de mensajes y refresca la vista.
+     */
     public void actualizarLista(List<ChatMessage> nuevaLista) {
         this.mensajes = nuevaLista;
         notifyDataSetChanged();
@@ -56,6 +62,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         }
     }
 }
+
+
 
 
 

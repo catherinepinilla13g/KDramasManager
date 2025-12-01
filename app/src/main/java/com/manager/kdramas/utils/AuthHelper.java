@@ -19,15 +19,16 @@ import java.util.UUID;
 
 /**
  * AuthHelper - Maneja la autenticación de usuarios para el chat.
-
+ *
  * Responsabilidades:
  * - Proveer identidad anónima si el usuario no inicia sesión.
  * - Permitir login con Google y vincularlo a Firebase Auth.
- * - Retornar un objeto UserIdentity con userId y displayName.
+ * - Retornar un objeto UserIdentity con userId, displayName, email y foto.
  */
 public class AuthHelper {
 
     private static final int RC_SIGN_IN = 9001;
+    private static UserIdentity identity; // identidad actual en memoria
 
     /**
      * Asegura que exista una sesión anónima si no hay usuario actual.
@@ -37,6 +38,11 @@ public class AuthHelper {
             auth.signInAnonymously()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = auth.getCurrentUser();
+                            if (user != null) {
+                                identity = new UserIdentity(user.getUid(), "Invitado");
+                                identity.isAnonymous = true;
+                            }
                             onSuccess.run();
                         } else {
                             onFailure.run();
@@ -49,18 +55,33 @@ public class AuthHelper {
 
     /**
      * Obtiene la identidad actual del usuario.
-     * Si no hay sesión, devuelve un invitado con UUID.
      */
     public static UserIdentity getIdentity() {
+        if (identity != null) return identity;
+
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
 
-        String uid = user != null ? user.getUid() : "anon-" + UUID.randomUUID();
-        String name = (user != null && user.getDisplayName() != null)
-                ? user.getDisplayName()
-                : "Invitado";
+        if (user == null) {
+            identity = new UserIdentity("anon-" + UUID.randomUUID(), "Invitado");
+            identity.isAnonymous = true;
+        } else {
+            identity = new UserIdentity(
+                    user.getUid(),
+                    user.getDisplayName() != null ? user.getDisplayName() : "Usuario",
+                    user.getEmail(),
+                    user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null
+            );
+            identity.isAnonymous = user.isAnonymous();
+        }
+        return identity;
+    }
 
-        return new UserIdentity(uid, name);
+    /**
+     * Permite establecer manualmente la identidad (ej. en LoginActivity).
+     */
+    public static void setIdentity(UserIdentity id) {
+        identity = id;
     }
 
     /**
@@ -95,6 +116,16 @@ public class AuthHelper {
             auth.signInWithCredential(credential)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = auth.getCurrentUser();
+                            if (user != null) {
+                                identity = new UserIdentity(
+                                        user.getUid(),
+                                        user.getDisplayName() != null ? user.getDisplayName() : account.getGivenName(),
+                                        user.getEmail(),
+                                        user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null
+                                );
+                                identity.isAnonymous = false;
+                            }
                             onSuccess.run();
                         } else {
                             onFailure.run();
@@ -105,3 +136,5 @@ public class AuthHelper {
         }
     }
 }
+
+

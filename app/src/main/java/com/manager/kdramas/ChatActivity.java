@@ -22,6 +22,9 @@ import java.util.List;
 
 /**
  * ChatActivity - Pantalla de chat en tiempo real sobre K-Dramas.
+ * - Muestra historial desde Firebase.
+ * - Suscribe a tópico MQTT para mensajes en tiempo real.
+ * - Permite enviar mensajes.
  */
 public class ChatActivity extends AppCompatActivity {
 
@@ -48,8 +51,14 @@ public class ChatActivity extends AppCompatActivity {
 
         // Identidad del usuario (Firebase o anónima)
         UserIdentity identity = AuthHelper.getIdentity();
-        userId = identity.userId;
-        displayName = identity.displayName;
+        if (identity != null) {
+            userId = identity.userId;
+            displayName = identity.displayName;
+        } else {
+            // Fallback si no hay identidad
+            userId = "anon";
+            displayName = "Invitado";
+        }
 
         // Vincular componentes
         recyclerChat = findViewById(R.id.recyclerChat);
@@ -85,9 +94,12 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Actualiza la lista de mensajes en el RecyclerView.
+     */
     private void mostrarMensajes(List<ChatMessage> mensajes) {
         chatAdapter.actualizarLista(mensajes);
-        if (!mensajes.isEmpty()) {
+        if (mensajes != null && !mensajes.isEmpty()) {
             recyclerChat.scrollToPosition(mensajes.size() - 1);
         }
     }
@@ -95,12 +107,14 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //Desconectar cliente MQTT al cerrar la actividad
-        chatViewModel.desconectar();
+        // Desconectar cliente MQTT al cerrar la actividad
+        if (chatViewModel != null) {
+            chatViewModel.desconectar();
+        }
     }
 
     /**
-     * Ejemplo de logout opcional desde el chat
+     * Ejemplo de logout opcional desde el chat.
      */
     private void cerrarSesion() {
         FirebaseAuth.getInstance().signOut();
@@ -108,6 +122,7 @@ public class ChatActivity extends AppCompatActivity {
         finish();
     }
 }
+
 
 
 

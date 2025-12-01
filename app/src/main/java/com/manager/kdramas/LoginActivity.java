@@ -25,7 +25,7 @@ import com.manager.kdramas.model.UserIdentity;
  * - Permitir login con Google (Firebase Auth).
  * - Permitir acceso como invitado mediante autenticación anónima.
  * - Registrar usuarios en Firebase Database.
- * - Redirigir a ChatActivity o ContactsActivity tras autenticación exitosa.
+ * - Redirigir a ChatActivity o ContactActivity tras autenticación exitosa.
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -59,6 +59,12 @@ public class LoginActivity extends AppCompatActivity {
             auth.signInAnonymously().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this, "Acceso como invitado", Toast.LENGTH_SHORT).show();
+                    // Crear identidad invitado
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user != null) {
+                        AuthHelper.setIdentity(new UserIdentity(user.getUid(), "Invitado"));
+                        AuthHelper.getIdentity().isAnonymous = true;
+                    }
                     navegarDespuesLogin("global");
                 } else {
                     Toast.makeText(this, "Error en acceso anónimo", Toast.LENGTH_SHORT).show();
@@ -100,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Usuario Google → registrar en Firebase y abrir contactos
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user != null) {
+            if (user != null && identity != null) {
                 DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
                 usersRef.child(user.getUid()).setValue(identity);
             }
@@ -110,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 }
+
 
 
 
