@@ -92,7 +92,7 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
         private ImageView imgKdrama;
         private TextView txtTitulo, txtGenero, txtAnio, txtCapitulos, txtEstado;
         private RatingBar ratingCalificacion;
-        private ImageButton btnNetflix, btnTrailer; // nuevos iconos
+        private ImageButton btnNetflix, btnTrailer; 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,7 +118,7 @@ public class KdramaAdapter extends RecyclerView.Adapter<KdramaAdapter.ViewHolder
             cargarImagen(kdrama.getImagenUrl());
             configurarCalificacion(kdrama.getCalificacion());
             configurarClick(kdrama, listener);
-            configurarAccionesExternas(kdrama); // nuevo
+            configurarAccionesExternas(kdrama); 
         }
 
         private void establecerTextos(Kdrama kdrama) {
