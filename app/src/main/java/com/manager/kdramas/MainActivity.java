@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
         txtAnio = findViewById(R.id.txtAnio);
         txtCapitulos = findViewById(R.id.txtCapitulos);
         txtImagenUrl = findViewById(R.id.txtImagenUrl);
-        txtUrlPlataforma = findViewById(R.id.txtUrlPlataforma); // nuevo
-        txtUrlTrailer = findViewById(R.id.txtUrlTrailer);       // nuevo
+        txtUrlPlataforma = findViewById(R.id.txtUrlPlataforma); 
+        txtUrlTrailer = findViewById(R.id.txtUrlTrailer);       
         spnGenero = findViewById(R.id.spnGenero);
-        spnEstado = findViewById(R.id.spnEstado);               // nuevo
+        spnEstado = findViewById(R.id.spnEstado);               
         ratingCalificacion = findViewById(R.id.ratingCalificacion);
         btnGuardar = findViewById(R.id.btnGuardar);
         btnVerLista = findViewById(R.id.btnVerLista);
