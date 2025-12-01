@@ -108,7 +108,7 @@ public class ListarKdramas extends AppCompatActivity {
             if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                 // No hay sesión → abrir LoginActivity
                 Intent intent = new Intent(this, LoginActivity.class);
-                intent.putExtra("room", "global"); // puedes pasar la sala que quieras
+                intent.putExtra("room", "global"); // puede pasar a la sala que quieras
                 startActivity(intent);
             } else {
                 // Ya hay sesión → abrir ChatActivity directamente
@@ -189,8 +189,8 @@ public class ListarKdramas extends AppCompatActivity {
         intent.putExtra("calificacion", kdrama.getCalificacion());
         intent.putExtra("finalizado", kdrama.getFinalizado());
         intent.putExtra("imagen_url", kdrama.getImagenUrl());
-        intent.putExtra("url_plataforma", kdrama.getUrlPlataforma()); // nuevo
-        intent.putExtra("url_trailer", kdrama.getUrlTrailer());       // nuevo
+        intent.putExtra("url_plataforma", kdrama.getUrlPlataforma()); 
+        intent.putExtra("url_trailer", kdrama.getUrlTrailer());       
         startActivity(intent);
     }
 
