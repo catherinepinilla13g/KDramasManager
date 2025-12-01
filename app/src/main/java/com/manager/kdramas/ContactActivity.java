@@ -51,7 +51,7 @@ public class ContactActivity extends AppCompatActivity {
         recyclerContactos = findViewById(R.id.recyclerContactos);
         searchContactos = findViewById(R.id.searchContactos);
         FloatingActionButton btnAgregar = findViewById(R.id.btnAgregarContacto);
-        FloatingActionButton btnPerfil = findViewById(R.id.btnPerfil); // nuevo botón en layout
+        FloatingActionButton btnPerfil = findViewById(R.id.btnPerfil); 
 
         adapter = new ContactAdapter(
                 listaCompleta,
