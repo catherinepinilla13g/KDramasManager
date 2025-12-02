@@ -5,11 +5,14 @@ package com.manager.kdramas.model;
  * Se utiliza tanto para el chat como para perfil y contactos.
  */
 public class UserIdentity {
-    public String userId;
-    public String displayName;
-    public String email;
-    public String photoUrl;
-    public boolean isAnonymous;
+    private String userId;
+    private String displayName;
+    private String email;
+    private String photoUrl;
+    private boolean isAnonymous;
+
+    // Constructor vacío requerido por Firebase
+    public UserIdentity() {}
 
     // Constructor básico (para invitados)
     public UserIdentity(String id, String name) {
@@ -27,7 +30,30 @@ public class UserIdentity {
         this.isAnonymous = false;
     }
 
-    // Constructor vacío requerido por Firebase
-    public UserIdentity() {}
+    // Getters
+    public String getUserId() { return userId; }
+    public String getDisplayName() { return displayName; }
+    public String getEmail() { return email; }
+    public String getPhotoUrl() { return photoUrl; }
+    public boolean isAnonymous() { return isAnonymous; }
+
+    // Setters
+    public void setUserId(String userId) { this.userId = userId; }
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
+    public void setEmail(String email) { this.email = email; }
+    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
+    public void setAnonymous(boolean anonymous) { isAnonymous = anonymous; }
+
+    // Método de utilidad
+    @Override
+    public String toString() {
+        return "UserIdentity{" +
+                "userId='" + userId + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", email='" + email + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", isAnonymous=" + isAnonymous +
+                '}';
+    }
 }
 

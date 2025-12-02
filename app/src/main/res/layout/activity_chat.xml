@@ -8,6 +8,24 @@
     android:orientation="vertical"
     android:background="@color/background">
 
+    <!-- Barra superior con botón de menú -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="end">
+
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="@string/menu_opciones"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </LinearLayout>
+
     <!-- Lista de mensajes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerChat"
@@ -46,3 +64,4 @@
             tools:ignore="SpeakableTextPresentCheck" />
     </LinearLayout>
 </LinearLayout>
+

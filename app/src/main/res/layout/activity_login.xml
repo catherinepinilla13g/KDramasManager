@@ -25,6 +25,34 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <!-- Campo Email -->
+    <EditText
+        android:id="@+id/edEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Campo Contraseña -->
+    <EditText
+        android:id="@+id/edPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Botón Login con correo -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEmailLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar sesión con correo"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="24dp" />
+
     <!-- Botón Google -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnGoogle"
@@ -35,7 +63,8 @@
         android:drawablePadding="8dp"
         android:background="@android:color/white"
         android:textColor="@android:color/black"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
 
     <!-- Botón Invitado -->
     <com.google.android.material.button.MaterialButton
@@ -43,9 +72,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Entrar como invitado"
-        android:layout_marginTop="16dp"
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white" />
 
 </LinearLayout>
+
 

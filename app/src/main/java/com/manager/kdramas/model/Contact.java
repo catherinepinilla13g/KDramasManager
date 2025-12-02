@@ -2,7 +2,6 @@ package com.manager.kdramas.model;
 
 /**
  * Contact - Representa un contacto de usuario en la aplicación.
-
  * Campos:
  * - id: identificador único del contacto (uid de Firebase).
  * - nombre: nombre visible del contacto.
@@ -35,4 +34,5 @@ public class Contact {
     public void setEmail(String email) { this.email = email; }
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 }
+
 

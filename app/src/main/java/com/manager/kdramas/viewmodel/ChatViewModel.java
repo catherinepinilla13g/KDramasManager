@@ -1,8 +1,12 @@
 package com.manager.kdramas.viewmodel;
 
+import android.app.Application;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,11 +23,12 @@ import java.util.List;
 
 /**
  * ChatViewModel - Lógica de negocio para el chat.
- * - Maneja conexión MQTT (tiempo real).
+ * - Maneja conexión MQTT (tiempo real) con Eclipse Paho.
  * - Persiste mensajes en Firebase Realtime Database.
  * - Expone LiveData para que la UI observe cambios.
+ * - Permite borrar mensajes globalmente en una sala.
  */
-public class ChatViewModel extends ViewModel {
+public class ChatViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<ChatMessage>> mensajes =
             new MutableLiveData<>(new ArrayList<>());
@@ -32,18 +37,27 @@ public class ChatViewModel extends ViewModel {
     private final DatabaseReference mensajesRef =
             FirebaseDatabase.getInstance().getReference("messages");
 
+    public ChatViewModel(@NonNull Application application) {
+        super(application);
+    }
+
     public LiveData<List<ChatMessage>> getMensajes() {
         return mensajes;
     }
 
-    // Inicializar cliente MQTT
+    // Inicializar cliente MQTT con Context
     public void inicializar(String clientId) {
-        mqttRepository = new MqttRepository(clientId);
-        mqttRepository.connect();
+        mqttRepository = new MqttRepository(getApplication(), clientId);
+        mqttRepository.connect(
+                () -> Log.d("ChatViewModel", "Conectado a MQTT"),
+                error -> Log.e("ChatViewModel", "Error al conectar MQTT", error)
+        );
     }
 
     // Suscribirse a un tópico MQTT
     public void suscribir(String topic) {
+        if (mqttRepository == null) return;
+
         mqttRepository.subscribe(topic, payload -> {
             try {
                 JSONObject json = new JSONObject(payload);
@@ -55,7 +69,10 @@ public class ChatViewModel extends ViewModel {
                 );
 
                 // Actualizar lista en memoria
-                List<ChatMessage> lista = new ArrayList<>(mensajes.getValue());
+                List<ChatMessage> lista = new ArrayList<>();
+                if (mensajes.getValue() != null) {
+                    lista.addAll(mensajes.getValue());
+                }
                 lista.add(msg);
                 mensajes.postValue(lista);
 
@@ -73,6 +90,8 @@ public class ChatViewModel extends ViewModel {
 
     // Enviar mensaje por MQTT y guardar en Firebase
     public void enviarMensaje(String topic, ChatMessage msg) {
+        if (mqttRepository == null) return;
+
         try {
             JSONObject json = new JSONObject();
             json.put("userId", msg.userId);
@@ -110,9 +129,19 @@ public class ChatViewModel extends ViewModel {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-
+                        error.toException().printStackTrace();
                     }
                 });
+    }
+
+    // Borrar todos los mensajes de una sala (vaciar chat global)
+    public void borrarMensajesGlobal(String room) {
+        mensajesRef.child(room).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    mensajes.setValue(new ArrayList<>()); // limpiar también en memoria
+                    Log.d("ChatViewModel", "Mensajes eliminados globalmente en sala: " + room);
+                })
+                .addOnFailureListener(e -> Log.e("ChatViewModel", "Error al eliminar mensajes", e));
     }
 
     // Método público para desconectar manualmente
@@ -131,6 +160,9 @@ public class ChatViewModel extends ViewModel {
         }
     }
 }
+
+
+
 
 
 

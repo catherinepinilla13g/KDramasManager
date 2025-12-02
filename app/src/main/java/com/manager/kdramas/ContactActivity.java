@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.manager.kdramas.adapters.ContactAdapter;
 import com.manager.kdramas.model.Contact;
 import com.manager.kdramas.viewmodel.ContactViewModel;
@@ -42,7 +43,8 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
 
         // Bloquear invitados
-        if (FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.isAnonymous()) {
             Toast.makeText(this, "Invitado no puede gestionar contactos", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -51,7 +53,7 @@ public class ContactActivity extends AppCompatActivity {
         recyclerContactos = findViewById(R.id.recyclerContactos);
         searchContactos = findViewById(R.id.searchContactos);
         FloatingActionButton btnAgregar = findViewById(R.id.btnAgregarContacto);
-        FloatingActionButton btnPerfil = findViewById(R.id.btnPerfil); 
+        FloatingActionButton btnPerfil = findViewById(R.id.btnPerfil);
 
         adapter = new ContactAdapter(
                 listaCompleta,
@@ -67,7 +69,9 @@ public class ContactActivity extends AppCompatActivity {
                             .setTitle("Eliminar contacto")
                             .setMessage("¿Deseas eliminar a " + contact.getNombre() + "?")
                             .setPositiveButton("Eliminar", (dialog, which) -> {
-                                contactViewModel.eliminarContacto(contact.getId());
+                                if (contactViewModel != null) {
+                                    contactViewModel.eliminarContacto(contact.getId());
+                                }
                             })
                             .setNegativeButton("Cancelar", null)
                             .show();
@@ -119,7 +123,7 @@ public class ContactActivity extends AppCompatActivity {
                 .setView(input)
                 .setPositiveButton("Agregar", (dialog, which) -> {
                     String contactUid = input.getText().toString().trim();
-                    if (!contactUid.isEmpty()) {
+                    if (!contactUid.isEmpty() && contactViewModel != null) {
                         contactViewModel.agregarContacto(contactUid);
                     }
                 })
@@ -128,16 +132,19 @@ public class ContactActivity extends AppCompatActivity {
     }
 
     private void filtrarContactos(String texto) {
+        if (texto == null) texto = "";
         List<Contact> filtrada = new ArrayList<>();
         for (Contact c : listaCompleta) {
-            if ((c.getNombre() != null && c.getNombre().toLowerCase().contains(texto.toLowerCase()))
-                    || (c.getEmail() != null && c.getEmail().toLowerCase().contains(texto.toLowerCase()))) {
+            String nombre = c.getNombre() != null ? c.getNombre().toLowerCase() : "";
+            String email = c.getEmail() != null ? c.getEmail().toLowerCase() : "";
+            if (nombre.contains(texto.toLowerCase()) || email.contains(texto.toLowerCase())) {
                 filtrada.add(c);
             }
         }
         adapter.actualizarLista(filtrada);
     }
 }
+
 
 
 

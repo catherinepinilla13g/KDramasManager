@@ -1,7 +1,6 @@
 package com.manager.kdramas;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,27 +19,28 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.manager.kdramas.utils.AuthHelper;
 
 /**
  * ProfileActivity - Pantalla de perfil de usuario.
- * - Muestra y permite editar nombre y foto de perfil.
+ * - Muestra y permite editar nombre y foto de perfil (por URL).
  * - Condiciona edición según tipo de usuario (Google vs invitado).
- * - Permite cerrar sesión.
+ * - Permite cerrar sesión y abrir chat.
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    private static final int PICK_IMAGE = 100;
     private ImageView imgFotoPerfil;
     private EditText edNombre;
+    private EditText edFotoUrl; // campo para escribir la URL de la imagen
     private TextView txtEmail;
     private Button btnGuardar;
     private Button btnLogout;
+    private Button btnChatGlobal;
+    private Button btnChatPrivado; // opcional
 
     private String uid;
     private DatabaseReference userRef;
-    private StorageReference storageRef;
+    private GoogleSignInClient googleClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +49,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         imgFotoPerfil = findViewById(R.id.imgFotoPerfil);
         edNombre = findViewById(R.id.edNombre);
+        edFotoUrl = findViewById(R.id.edFotoUrl);
         txtEmail = findViewById(R.id.txtEmail);
         btnGuardar = findViewById(R.id.btnGuardar);
         btnLogout = findViewById(R.id.btnLogout);
+        btnChatGlobal = findViewById(R.id.btnChatGlobal);
+        btnChatPrivado = findViewById(R.id.btnChatPrivado);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -60,11 +64,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         uid = currentUser.getUid();
         userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
-        storageRef = FirebaseStorage.getInstance().getReference("profile_photos");
+        googleClient = AuthHelper.getGoogleClient(this);
 
         // Condicionar según tipo de usuario
         if (currentUser.isAnonymous()) {
             edNombre.setEnabled(false);
+            edFotoUrl.setEnabled(false);
             btnGuardar.setEnabled(false);
             txtEmail.setText("Invitado");
         } else {
@@ -75,68 +80,63 @@ public class ProfileActivity extends AppCompatActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                String nombre = snapshot.child("nombre").getValue(String.class);
-                String fotoUrl = snapshot.child("fotoUrl").getValue(String.class);
+                if (snapshot.exists()) {
+                    String nombre = snapshot.child("displayName").getValue(String.class);
+                    String fotoUrl = snapshot.child("photoUrl").getValue(String.class);
 
-                if (nombre != null) edNombre.setText(nombre);
-                if (fotoUrl != null) {
-                    Glide.with(ProfileActivity.this).load(fotoUrl).into(imgFotoPerfil);
+                    if (nombre != null) edNombre.setText(nombre);
+                    if (fotoUrl != null) {
+                        edFotoUrl.setText(fotoUrl);
+                        Glide.with(ProfileActivity.this).load(fotoUrl).into(imgFotoPerfil);
+                    }
                 }
             }
 
             @Override public void onCancelled(DatabaseError error) {}
         });
 
-        // Seleccionar nueva foto
-        imgFotoPerfil.setOnClickListener(v -> {
-            if (!currentUser.isAnonymous()) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, PICK_IMAGE);
-            } else {
-                Toast.makeText(this, "Invitado no puede cambiar foto", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Guardar cambios
+        // Guardar cambios (nombre y URL de foto)
         btnGuardar.setOnClickListener(v -> {
-            String nuevoNombre = edNombre.getText().toString().trim();
-            if (!nuevoNombre.isEmpty() && !currentUser.isAnonymous()) {
-                userRef.child("nombre").setValue(nuevoNombre);
+            if (!currentUser.isAnonymous()) {
+                String nuevoNombre = edNombre.getText().toString().trim();
+                String nuevaFotoUrl = edFotoUrl.getText().toString().trim();
+
+                if (!nuevoNombre.isEmpty()) {
+                    userRef.child("displayName").setValue(nuevoNombre);
+                }
+                if (!nuevaFotoUrl.isEmpty()) {
+                    userRef.child("photoUrl").setValue(nuevaFotoUrl);
+                    Glide.with(ProfileActivity.this).load(nuevaFotoUrl).into(imgFotoPerfil);
+                }
                 Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Cerrar sesión
+        // Abrir chat global
+        btnChatGlobal.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("room", "global");
+            startActivity(intent);
+        });
+
+        // Abrir chat privado (ejemplo con UID fijo)
+        btnChatPrivado.setOnClickListener(v -> {
+            String targetUid = "UID_DEL_CONTACTO";
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("room", targetUid);
+            startActivity(intent);
+        });
+
+        // Cerrar sesión (Firebase + Google)
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            googleClient.signOut().addOnCompleteListener(task -> {
+                AuthHelper.setIdentity(null);
+                Intent i = new Intent(this, LoginActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+                finish();
+            });
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null || currentUser.isAnonymous()) return;
-
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri imageUri = data.getData();
-            imgFotoPerfil.setImageURI(imageUri);
-
-            // Subir a Firebase Storage
-            StorageReference fileRef = storageRef.child(uid + ".jpg");
-            fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot ->
-                    fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        // Guardar URL en Realtime Database
-                        userRef.child("fotoUrl").setValue(uri.toString());
-                        Toast.makeText(this, "Foto de perfil actualizada", Toast.LENGTH_SHORT).show();
-                    })
-            );
-        }
-    }
 }
-
-
-

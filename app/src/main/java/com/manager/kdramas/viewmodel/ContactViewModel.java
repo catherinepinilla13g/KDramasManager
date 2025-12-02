@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.manager.kdramas.model.Contact;
+import com.manager.kdramas.model.UserIdentity;
 import com.manager.kdramas.repositories.ContactRepository;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ import java.util.List;
  */
 public class ContactViewModel extends ViewModel {
 
-    private final MutableLiveData<List<Contact>> contactos =
+    private final MutableLiveData<List<UserIdentity>> contactos =
             new MutableLiveData<>(new ArrayList<>());
     private final ContactRepository repository = new ContactRepository();
 
-    public LiveData<List<Contact>> getContactos() {
+    public LiveData<List<UserIdentity>> getContactos() {
         return contactos;
     }
 
@@ -34,7 +34,6 @@ public class ContactViewModel extends ViewModel {
     public void cargarContactos() {
         if (FirebaseAuth.getInstance().getCurrentUser() == null ||
                 FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
-            // Invitado: no carga contactos
             contactos.setValue(new ArrayList<>());
             return;
         }
@@ -43,41 +42,32 @@ public class ContactViewModel extends ViewModel {
         repository.getContactsRef(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                List<Contact> lista = new ArrayList<>();
+                List<UserIdentity> lista = new ArrayList<>();
 
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String contactUid = child.getKey();
-
-                    repository.getUsersRef().child(contactUid)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot userSnap) {
-                                    Contact c = userSnap.getValue(Contact.class);
-                                    if (c != null) {
-                                        c.setId(contactUid);
-                                        lista.add(c);
-                                    }
-                                    // Actualizar lista completa cada vez que se obtiene un contacto
-                                    contactos.setValue(new ArrayList<>(lista));
-                                }
-
-                                @Override public void onCancelled(DatabaseError error) {}
-                            });
+                    UserIdentity c = child.getValue(UserIdentity.class);
+                    if (c != null) {
+                        c.setUserId(child.getKey()); // asegurar que el id quede seteado
+                        lista.add(c);
+                    }
                 }
+                contactos.setValue(lista);
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {}
+            public void onCancelled(DatabaseError error) {
+                error.toException().printStackTrace();
+            }
         });
     }
 
-    // Agregar contacto
-    public void agregarContacto(String contactUid) {
+    // Agregar contacto (recibe objeto UserIdentity)
+    public void agregarContacto(UserIdentity contact) {
         if (FirebaseAuth.getInstance().getCurrentUser() == null ||
                 FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) return;
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        repository.addContact(uid, contactUid);
+        repository.addContact(uid, contact);
     }
 
     // Eliminar contacto
@@ -89,6 +79,9 @@ public class ContactViewModel extends ViewModel {
         repository.removeContact(uid, contactUid);
     }
 }
+
+
+
 
 
 

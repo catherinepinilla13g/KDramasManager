@@ -1,0 +1,15 @@
+<!-- item_chat_message_sent.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/txtMessageSent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bubble_sent"
+        android:textColor="@android:color/white"
+        android:padding="10dp"/>
+</LinearLayout>

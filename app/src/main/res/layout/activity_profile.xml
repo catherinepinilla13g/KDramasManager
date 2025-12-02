@@ -14,6 +14,15 @@
         android:scaleType="centerCrop"
         android:background="@drawable/circle_background" />
 
+    <!-- Campo para URL de la foto -->
+    <EditText
+        android:id="@+id/edFotoUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="URL de la foto de perfil"
+        android:layout_marginTop="12dp"
+        android:inputType="textUri" />
+
     <!-- Nombre editable -->
     <EditText
         android:id="@+id/edNombre"
@@ -39,6 +48,26 @@
         android:text="Guardar cambios"
         android:layout_marginTop="24dp" />
 
+    <!-- Botón abrir chat global -->
+    <Button
+        android:id="@+id/btnChatGlobal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entrar al chat global"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:textColor="@android:color/white" />
+
+    <!-- Botón abrir chat privado -->
+    <Button
+        android:id="@+id/btnChatPrivado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entrar a chat privado"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:textColor="@android:color/white" />
+
     <!-- Botón cerrar sesión -->
     <Button
         android:id="@+id/btnLogout"
@@ -50,4 +79,7 @@
         android:textColor="@android:color/white" />
 
 </LinearLayout>
+
+
+
 

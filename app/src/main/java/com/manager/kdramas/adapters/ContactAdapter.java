@@ -15,6 +15,9 @@ import com.manager.kdramas.model.Contact;
 
 import java.util.List;
 
+/**
+ * ContactAdapter - Adaptador para mostrar contactos en el RecyclerView.
+ */
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
 
     private List<Contact> contactos;
@@ -48,16 +51,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contactos.get(position);
-        holder.nombre.setText(contact.getNombre());
-        holder.email.setText(contact.getEmail());
+
+        holder.nombre.setText(contact.getNombre() != null ? contact.getNombre() : "Sin nombre");
+        holder.email.setText(contact.getEmail() != null ? contact.getEmail() : "");
 
         Glide.with(holder.itemView.getContext())
-                .load(contact.getFotoUrl())
+                .load(contact.getFotoUrl() != null ? contact.getFotoUrl() : R.drawable.ic_person)
                 .placeholder(R.drawable.ic_person)
                 .into(holder.foto);
 
         holder.itemView.setOnClickListener(v -> clickListener.onContactClick(contact));
-
         holder.itemView.setOnLongClickListener(v -> {
             longClickListener.onContactLongClick(contact);
             return true;
@@ -86,5 +89,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         }
     }
 }
+
+
 
 

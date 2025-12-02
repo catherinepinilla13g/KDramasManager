@@ -1,59 +1,102 @@
 package com.manager.kdramas.repositories;
 
-import com.hivemq.client.mqtt.MqttClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
+import android.content.Context;
+import android.util.Log;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+/**
+ * MqttRepository - Encapsula la conexión MQTT con Eclipse Paho.
+ * - Conecta al broker (ej. HiveMQ público).
+ * - Permite suscribirse y publicar mensajes.
+ * - Maneja desconexión.
+ */
 public class MqttRepository {
-    private Mqtt5BlockingClient client;
-    private final String server = "11a86f0e13684922ab64a3edb381ece0.s1.eu.hivemq.cloud"; 
-    private final int port = 8883; 
-    private final String clientId;
+    private final MqttAndroidClient client;
+    private final MqttConnectOptions options;
 
-    // Credenciales de HiveMQ Cloud
-    private final String username = "kdramasmanager";
-    private final String password = "P6HDshB13";
+    // Broker público de HiveMQ (no requiere usuario ni contraseña)
+    private static final String SERVER_URI = "tcp://broker.hivemq.com:1883";
 
-    public MqttRepository(String clientId) {
-        this.clientId = clientId;
-        client = MqttClient.builder()
-                .useMqttVersion5()
-                .serverHost(server)
-                .serverPort(port)
-                .sslWithDefaultConfig()
-                .identifier(clientId)
-                .buildBlocking();
+    // Si usas HiveMQ Cloud privado, aquí pondrías credenciales:
+    // private static final String USERNAME = "tuUsuario";
+    // private static final String PASSWORD = "tuContraseña";
+
+    public MqttRepository(Context context, String clientId) {
+        client = new MqttAndroidClient(context, SERVER_URI, clientId);
+
+        options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
+        options.setConnectionTimeout(10);
+        options.setKeepAliveInterval(30);
+
+        // Solo si usas HiveMQ Cloud privado:
+        // options.setUserName(USERNAME);
+        // options.setPassword(PASSWORD.toCharArray());
     }
 
-    public void connect() {
-        client.connectWith()
-                .simpleAuth()
-                .username(username)
-                .password(password.getBytes())
-                .applySimpleAuth()
-                .send();
+    public void connect(Runnable onConnected, Consumer<Throwable> onError) {
+        try {
+            client.connect(options, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Log.d("MqttRepository", "Conectado a MQTT con clientId: " + client.getClientId());
+                    onConnected.run();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Log.e("MqttRepository", "Error al conectar MQTT", exception);
+                    onError.accept(exception);
+                }
+            });
+        } catch (Exception e) {
+            onError.accept(e);
+        }
     }
 
     public void subscribe(String topic, Consumer<String> onMessage) {
-        client.toAsync().subscribeWith()
-                .topicFilter(topic)
-                .callback(publish -> {
-                    String payload = new String(publish.getPayloadAsBytes());
-                    onMessage.accept(payload);
-                })
-                .send();
+        try {
+            client.subscribe(topic, 1, (IMqttMessageListener) (t, message) -> {
+                String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
+                onMessage.accept(payload);
+            });
+            Log.d("MqttRepository", "Suscrito al tópico: " + topic);
+        } catch (Exception e) {
+            Log.e("MqttRepository", "Error al suscribirse al tópico: " + topic, e);
+        }
     }
 
     public void publish(String topic, String payload) {
-        client.toAsync().publishWith()
-                .topic(topic)
-                .payload(payload.getBytes())
-                .send();
+        try {
+            MqttMessage msg = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8));
+            msg.setQos(1);
+            client.publish(topic, msg);
+            Log.d("MqttRepository", "Publicado en tópico: " + topic);
+        } catch (Exception e) {
+            Log.e("MqttRepository", "Error al publicar en tópico: " + topic, e);
+        }
     }
 
     public void disconnect() {
-        client.disconnect();
+        try {
+            client.disconnect();
+            Log.d("MqttRepository", "Cliente MQTT desconectado");
+        } catch (Exception e) {
+            Log.e("MqttRepository", "Error al desconectar MQTT", e);
+        }
+    }
+
+    public boolean isConnected() {
+        return client.isConnected();
     }
 }
-
-

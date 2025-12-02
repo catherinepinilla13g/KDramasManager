@@ -39,34 +39,32 @@ android {
     }
 }
 
-        dependencies {
+dependencies {
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
 
-            implementation(libs.appcompat)
-            implementation(libs.material)
-            implementation(libs.activity)
-            implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
+    implementation(libs.cardview)
 
-            implementation(libs.recyclerview)
-            implementation(libs.cardview)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
+    implementation(libs.lifecycle.common)
 
-            implementation(libs.lifecycle.viewmodel)
-            implementation(libs.lifecycle.livedata)
-            implementation(libs.lifecycle.common)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.auth)
 
-            implementation(libs.firebase.firestore)
-            implementation(libs.firebase.database)
+    implementation(libs.glide)
+    implementation(libs.gson)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.lifecycle.viewmodel)
 
-            implementation(libs.glide)
-            implementation(libs.firebase.auth)
+    implementation(libs.paho.mqtt)
+    implementation(libs.paho.mqtt.android)
 
-            implementation(libs.hivemq.mqtt)
-            implementation(libs.gson)
-            implementation(libs.play.services.auth)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.firebase.storage)
-
-
-            testImplementation(libs.junit)
-            androidTestImplementation(libs.ext.junit)
-            androidTestImplementation(libs.espresso.core)
-        }
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+}
