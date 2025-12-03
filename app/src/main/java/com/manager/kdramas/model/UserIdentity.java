@@ -11,17 +11,15 @@ public class UserIdentity {
     private String photoUrl;
     private boolean isAnonymous;
 
-    // Constructor vacío requerido por Firebase
     public UserIdentity() {}
 
-    // Constructor básico (para invitados)
+    // Constructor básico (invitado)
     public UserIdentity(String id, String name) {
         this.userId = id;
         this.displayName = name;
         this.isAnonymous = true;
     }
 
-    // Constructor completo (para usuarios autenticados)
     public UserIdentity(String id, String name, String email, String photoUrl) {
         this.userId = id;
         this.displayName = name;
@@ -43,17 +41,6 @@ public class UserIdentity {
     public void setEmail(String email) { this.email = email; }
     public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
     public void setAnonymous(boolean anonymous) { isAnonymous = anonymous; }
-
-    // Método de utilidad
-    @Override
-    public String toString() {
-        return "UserIdentity{" +
-                "userId='" + userId + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", email='" + email + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
-                ", isAnonymous=" + isAnonymous +
-                '}';
-    }
 }
+
 

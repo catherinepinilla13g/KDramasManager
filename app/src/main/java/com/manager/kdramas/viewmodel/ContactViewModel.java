@@ -32,22 +32,25 @@ public class ContactViewModel extends ViewModel {
 
     // Cargar contactos desde Firebase
     public void cargarContactos() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null ||
-                FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null || auth.getCurrentUser().isAnonymous()) {
             contactos.setValue(new ArrayList<>());
             return;
         }
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String uid = auth.getCurrentUser().getUid();
         repository.getContactsRef(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 List<UserIdentity> lista = new ArrayList<>();
-
                 for (DataSnapshot child : snapshot.getChildren()) {
+                    Object raw = child.getValue();
+                    if (raw instanceof Boolean) {
+                        continue;
+                    }
                     UserIdentity c = child.getValue(UserIdentity.class);
                     if (c != null) {
-                        c.setUserId(child.getKey()); // asegurar que el id quede seteado
+                        c.setUserId(child.getKey());
                         lista.add(c);
                     }
                 }
@@ -61,24 +64,26 @@ public class ContactViewModel extends ViewModel {
         });
     }
 
-    // Agregar contacto (recibe objeto UserIdentity)
+    // Agregar contacto
     public void agregarContacto(UserIdentity contact) {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null ||
-                FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) return;
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null || auth.getCurrentUser().isAnonymous()) return;
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String uid = auth.getCurrentUser().getUid();
         repository.addContact(uid, contact);
     }
 
     // Eliminar contacto
     public void eliminarContacto(String contactUid) {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null ||
-                FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) return;
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null || auth.getCurrentUser().isAnonymous()) return;
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String uid = auth.getCurrentUser().getUid();
         repository.removeContact(uid, contactUid);
     }
 }
+
+
 
 
 

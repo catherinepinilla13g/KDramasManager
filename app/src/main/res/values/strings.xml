@@ -44,4 +44,5 @@
     <string name="iniciar_sesi_n_con_google">Iniciar sesión con Google</string>
     <string name="agregar_contacto" />
     <string name="ver_perfil" />
+    <string name="menu_opciones" />
 </resources>

@@ -61,8 +61,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.androidx.lifecycle.viewmodel)
 
-    implementation(libs.paho.mqtt)
-    implementation(libs.paho.mqtt.android)
+    implementation(libs.hivemq.mqtt.client)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

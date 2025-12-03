@@ -13,7 +13,8 @@
         android:layout_height="48dp"
         android:src="@drawable/ic_person"
         android:scaleType="centerCrop"
-        android:layout_marginEnd="12dp" />
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/circle_background" />
 
     <!-- Datos del contacto -->
     <LinearLayout
@@ -22,22 +23,29 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
+        <!-- Nombre del usuario -->
         <TextView
             android:id="@+id/txtNombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre"
+            android:text="Nombre de usuario"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:singleLine="true" />
 
+        <!-- Correo electrónico -->
         <TextView
             android:id="@+id/txtEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="correo@example.com"
             android:textSize="14sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            android:ellipsize="end"
+            android:singleLine="true" />
     </LinearLayout>
 
 </LinearLayout>
+

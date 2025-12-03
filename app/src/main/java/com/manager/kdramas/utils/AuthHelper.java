@@ -41,7 +41,7 @@ public class AuthHelper {
                             FirebaseUser user = auth.getCurrentUser();
                             if (user != null) {
                                 identity = new UserIdentity(user.getUid(), "Invitado");
-                                identity.isAnonymous = true;
+                                identity.setAnonymous(true);
                             }
                             onSuccess.run();
                         } else {
@@ -64,7 +64,7 @@ public class AuthHelper {
 
         if (user == null) {
             identity = new UserIdentity("anon-" + UUID.randomUUID(), "Invitado");
-            identity.isAnonymous = true;
+            identity.setAnonymous(true);
         } else {
             identity = new UserIdentity(
                     user.getUid(),
@@ -72,13 +72,13 @@ public class AuthHelper {
                     user.getEmail(),
                     user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null
             );
-            identity.isAnonymous = user.isAnonymous();
+            identity.setAnonymous(user.isAnonymous());
         }
         return identity;
     }
 
     /**
-     * Permite establecer manualmente la identidad (ej. en LoginActivity).
+     * Permite establecer manualmente la identidad
      */
     public static void setIdentity(UserIdentity id) {
         identity = id;
@@ -124,7 +124,7 @@ public class AuthHelper {
                                         user.getEmail(),
                                         user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null
                                 );
-                                identity.isAnonymous = false;
+                                identity.setAnonymous(false);
                             }
                             onSuccess.run();
                         } else {
@@ -136,5 +136,3 @@ public class AuthHelper {
         }
     }
 }
-
-

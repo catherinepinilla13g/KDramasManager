@@ -11,28 +11,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.manager.kdramas.R;
-import com.manager.kdramas.model.Contact;
+import com.manager.kdramas.model.UserIdentity;
 
 import java.util.List;
 
 /**
  * ContactAdapter - Adaptador para mostrar contactos en el RecyclerView.
+ * Ahora trabaja con UserIdentity en lugar de Contact.
  */
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
 
-    private List<Contact> contactos;
+    private List<UserIdentity> contactos;
     private final OnContactClickListener clickListener;
     private final OnContactLongClickListener longClickListener;
 
     public interface OnContactClickListener {
-        void onContactClick(Contact contact);
+        void onContactClick(UserIdentity contact);
     }
 
     public interface OnContactLongClickListener {
-        void onContactLongClick(Contact contact);
+        void onContactLongClick(UserIdentity contact);
     }
 
-    public ContactAdapter(List<Contact> contactos,
+    public ContactAdapter(List<UserIdentity> contactos,
                           OnContactClickListener clickListener,
                           OnContactLongClickListener longClickListener) {
         this.contactos = contactos;
@@ -50,13 +51,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
-        Contact contact = contactos.get(position);
+        UserIdentity contact = contactos.get(position);
 
-        holder.nombre.setText(contact.getNombre() != null ? contact.getNombre() : "Sin nombre");
+        holder.nombre.setText(contact.getDisplayName() != null ? contact.getDisplayName() : "Sin nombre");
         holder.email.setText(contact.getEmail() != null ? contact.getEmail() : "");
 
         Glide.with(holder.itemView.getContext())
-                .load(contact.getFotoUrl() != null ? contact.getFotoUrl() : R.drawable.ic_person)
+                .load(contact.getPhotoUrl() != null ? contact.getPhotoUrl() : R.drawable.ic_person)
                 .placeholder(R.drawable.ic_person)
                 .into(holder.foto);
 
@@ -72,7 +73,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         return contactos != null ? contactos.size() : 0;
     }
 
-    public void actualizarLista(List<Contact> nuevaLista) {
+    public void actualizarLista(List<UserIdentity> nuevaLista) {
         this.contactos = nuevaLista;
         notifyDataSetChanged();
     }
@@ -89,6 +90,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         }
     }
 }
+
+
+
 
 
 

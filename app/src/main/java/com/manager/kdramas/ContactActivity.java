@@ -16,7 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.manager.kdramas.adapters.ContactAdapter;
-import com.manager.kdramas.model.Contact;
+import com.manager.kdramas.model.UserIdentity;
 import com.manager.kdramas.viewmodel.ContactViewModel;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class ContactActivity extends AppCompatActivity {
     private RecyclerView recyclerContactos;
     private SearchView searchContactos;
     private ContactAdapter adapter;
-    private List<Contact> listaCompleta = new ArrayList<>();
+    private List<UserIdentity> listaCompleta = new ArrayList<>();
     private ContactViewModel contactViewModel;
 
     @Override
@@ -60,17 +60,17 @@ public class ContactActivity extends AppCompatActivity {
                 contact -> {
                     // Abrir chat privado con el contacto
                     Intent intent = new Intent(this, ChatActivity.class);
-                    intent.putExtra("room", contact.getId());
+                    intent.putExtra("room", contact.getUserId());
                     startActivity(intent);
                 },
                 contact -> {
                     // Eliminar contacto
                     new AlertDialog.Builder(this)
                             .setTitle("Eliminar contacto")
-                            .setMessage("¿Deseas eliminar a " + contact.getNombre() + "?")
+                            .setMessage("¿Deseas eliminar a " + contact.getDisplayName() + "?")
                             .setPositiveButton("Eliminar", (dialog, which) -> {
                                 if (contactViewModel != null) {
-                                    contactViewModel.eliminarContacto(contact.getId());
+                                    contactViewModel.eliminarContacto(contact.getUserId());
                                 }
                             })
                             .setNegativeButton("Cancelar", null)
@@ -113,6 +113,9 @@ public class ContactActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Diálogo para agregar un nuevo contacto por UID.
+     */
     private void mostrarDialogoAgregar() {
         EditText input = new EditText(this);
         input.setHint("UID del contacto");
@@ -124,7 +127,13 @@ public class ContactActivity extends AppCompatActivity {
                 .setPositiveButton("Agregar", (dialog, which) -> {
                     String contactUid = input.getText().toString().trim();
                     if (!contactUid.isEmpty() && contactViewModel != null) {
-                        contactViewModel.agregarContacto(contactUid);
+                        // Construir objeto mínimo UserIdentity
+                        UserIdentity nuevo = new UserIdentity(contactUid, "Nuevo contacto");
+                        nuevo.setEmail("");
+                        nuevo.setPhotoUrl(null);
+                        nuevo.setAnonymous(false);
+
+                        contactViewModel.agregarContacto(nuevo);
                     }
                 })
                 .setNegativeButton("Cancelar", null)
@@ -133,9 +142,9 @@ public class ContactActivity extends AppCompatActivity {
 
     private void filtrarContactos(String texto) {
         if (texto == null) texto = "";
-        List<Contact> filtrada = new ArrayList<>();
-        for (Contact c : listaCompleta) {
-            String nombre = c.getNombre() != null ? c.getNombre().toLowerCase() : "";
+        List<UserIdentity> filtrada = new ArrayList<>();
+        for (UserIdentity c : listaCompleta) {
+            String nombre = c.getDisplayName() != null ? c.getDisplayName().toLowerCase() : "";
             String email = c.getEmail() != null ? c.getEmail().toLowerCase() : "";
             if (nombre.contains(texto.toLowerCase()) || email.contains(texto.toLowerCase())) {
                 filtrada.add(c);
@@ -144,7 +153,3 @@ public class ContactActivity extends AppCompatActivity {
         adapter.actualizarLista(filtrada);
     }
 }
-
-
-
-

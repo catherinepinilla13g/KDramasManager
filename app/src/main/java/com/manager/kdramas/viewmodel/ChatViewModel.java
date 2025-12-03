@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * ChatViewModel - Lógica de negocio para el chat.
- * - Maneja conexión MQTT (tiempo real) con Eclipse Paho.
+ * - Maneja conexión MQTT (tiempo real) con HiveMQ Client.
  * - Persiste mensajes en Firebase Realtime Database.
  * - Expone LiveData para que la UI observe cambios.
  * - Permite borrar mensajes globalmente en una sala.
@@ -45,9 +45,9 @@ public class ChatViewModel extends AndroidViewModel {
         return mensajes;
     }
 
-    // Inicializar cliente MQTT con Context
+    // Inicializar cliente MQTT con HiveMQ Client
     public void inicializar(String clientId) {
-        mqttRepository = new MqttRepository(getApplication(), clientId);
+        mqttRepository = new MqttRepository(clientId);
         mqttRepository.connect(
                 () -> Log.d("ChatViewModel", "Conectado a MQTT"),
                 error -> Log.e("ChatViewModel", "Error al conectar MQTT", error)
@@ -138,7 +138,7 @@ public class ChatViewModel extends AndroidViewModel {
     public void borrarMensajesGlobal(String room) {
         mensajesRef.child(room).removeValue()
                 .addOnSuccessListener(aVoid -> {
-                    mensajes.setValue(new ArrayList<>()); // limpiar también en memoria
+                    mensajes.setValue(new ArrayList<>());
                     Log.d("ChatViewModel", "Mensajes eliminados globalmente en sala: " + room);
                 })
                 .addOnFailureListener(e -> Log.e("ChatViewModel", "Error al eliminar mensajes", e));
@@ -160,6 +160,7 @@ public class ChatViewModel extends AndroidViewModel {
         }
     }
 }
+
 
 
 
