@@ -11,6 +11,8 @@
     - Capturar datos del usuario para crear una nueva instancia del modelo Kdrama.
     - Validar campos obligatorios antes de guardar.
     - Permitir navegación hacia la actividad de listado.
+    - Seleccionar estado del K-Drama desde el inicio.
+    - Ingresar URLs opcionales para imagen, plataforma y trailer.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -34,7 +36,6 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
-
     </androidx.appcompat.widget.Toolbar>
 
     <!-- ScrollView que permite desplazamiento vertical en formularios extensos -->
@@ -88,27 +89,18 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Selector de género mediante Spinner -->
-                    <LinearLayout
+                    <Spinner
+                        android:id="@+id/spnGenero"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
+                        android:layout_marginBottom="12dp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Género:"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp" />
-
-                        <Spinner
-                            android:id="@+id/spnGenero"
-                            android:layout_width="0dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="2" />
-                    </LinearLayout>
+                    <!-- Selector de estado desde el inicio -->
+                    <Spinner
+                        android:id="@+id/spnEstado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp" />
 
                     <!-- Campos en fila para ingresar el año de emisión y el número de capítulos -->
                     <LinearLayout
@@ -160,6 +152,36 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="URL de la imagen (opcional)"
+                            android:inputType="textUri" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo de texto para ingresar la URL de la plataforma (opcional) -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtUrlPlataforma"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="URL de plataforma (Netflix, Viki, etc.)"
+                            android:inputType="textUri" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Campo de texto para ingresar la URL del trailer (opcional) -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtUrlTrailer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="URL del trailer (YouTube, etc.)"
                             android:inputType="textUri" />
                     </com.google.android.material.textfield.TextInputLayout>
 

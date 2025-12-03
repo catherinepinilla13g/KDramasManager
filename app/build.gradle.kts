@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -29,10 +30,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    packaging {
+        resources {
+            pickFirsts.add("META-INF/INDEX.LIST")
+            pickFirsts.add("META-INF/io.netty.versions.properties")
+        }
+    }
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -45,7 +52,16 @@ dependencies {
     implementation(libs.lifecycle.livedata)
     implementation(libs.lifecycle.common)
 
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.auth)
+
     implementation(libs.glide)
+    implementation(libs.gson)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.lifecycle.viewmodel)
+
+    implementation(libs.hivemq.mqtt.client)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

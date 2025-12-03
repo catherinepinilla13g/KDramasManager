@@ -21,4 +21,5 @@
 
     <color name="estado_viendo">#4CAF50</color>
     <color name="estado_completado">#2196F3</color>
+    <color name="gray" />
 </resources>

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
  * Responsabilidades:
  * - No requiere ViewModel ni lógica de negocio.
- * - Muestra una pantalla temporal antes de navegar a MainActivity.
+ * - Muestra una pantalla temporal antes de navegar a ListarKdrmas.
  * - Puede utilizarse para inicializaciones básicas si se requiere.
  */
 public class SplashActivity extends AppCompatActivity {
@@ -33,18 +33,18 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     /**
-     * Programa la transición automática hacia MainActivity después de un retraso definido.
+     * Programa la transición automática hacia ListarKdramas después de un retraso definido.
      * Utiliza un Handler para ejecutar la navegación en segundo plano.
      */
     private void programarTransicion() {
-        new Handler().postDelayed(() -> navegarAMainActivity(), SPLASH_DELAY);
+        new Handler().postDelayed(() -> navegarAListarKdramas(), SPLASH_DELAY);
     }
 
     /**
-     * Inicia la actividad principal y finaliza la actual para evitar que el usuario regrese al splash.
+     * Inicia la actividad de listado y finaliza la actual para evitar que el usuario regrese al splash.
      */
-    private void navegarAMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void navegarAListarKdramas() {
+        Intent intent = new Intent(this, ListarKdramas.class);
         startActivity(intent);
         finish();
     }

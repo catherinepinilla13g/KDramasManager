@@ -1,36 +1,48 @@
 package com.manager.kdramas;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.manager.kdramas.model.Kdrama;
 import com.manager.kdramas.adapters.KdramaAdapter;
 import com.manager.kdramas.viewmodel.KdramaViewModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * ListarKdramas - Actividad que muestra la lista de K-Dramas registrados.
-
+ *
  * Responsabilidades:
  * - Observar los LiveData del ViewModel para recibir actualizaciones.
  * - Configurar y gestionar el RecyclerView y su adaptador.
  * - Navegar a la pantalla de edición al seleccionar un item.
  * - Mostrar estado vacío cuando no hay datos disponibles.
+ * - Permitir búsqueda y filtrado por campos importantes.
+ * - Permitir agregar nuevos K-Dramas desde la lista mediante botón flotante.
  */
 public class ListarKdramas extends AppCompatActivity {
 
     // Componentes visuales del layout
     private RecyclerView recyclerKdramas;
     private LinearLayout layoutEmpty;
+    private SearchView searchKdramas;
+    private FloatingActionButton fabAgregar;
+
+    private FloatingActionButton fabChat;
+
 
     // Adaptador para mostrar los K-Dramas en el RecyclerView
     private KdramaAdapter adapter;
@@ -38,12 +50,9 @@ public class ListarKdramas extends AppCompatActivity {
     // ViewModel que gestiona la lógica de presentación y acceso a datos
     private KdramaViewModel kdramaViewModel;
 
-    /**
-     * Método invocado al crear la actividad.
-     * Configura el ViewModel, la interfaz de usuario, los observadores y carga los datos iniciales.
-     *
-     * @param savedInstanceState Estado guardado de la instancia, si existe.
-     */
+    // Lista completa para aplicar filtros
+    private List<Kdrama> listaCompleta = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,20 +62,15 @@ public class ListarKdramas extends AppCompatActivity {
         configurarToolbar();
         vincularComponentes();
         configurarRecyclerView();
+        configurarEventos();
         configurarObservadores();
         cargarDatosIniciales();
     }
 
-    /**
-     * Inicializa el ViewModel utilizando ViewModelProvider.
-     */
     private void inicializarViewModel() {
         kdramaViewModel = new ViewModelProvider(this).get(KdramaViewModel.class);
     }
 
-    /**
-     * Configura la toolbar superior con botón de navegación hacia atrás.
-     */
     private void configurarToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,30 +80,61 @@ public class ListarKdramas extends AppCompatActivity {
         }
     }
 
-    /**
-     * Vincula los componentes visuales del layout con las variables Java.
-     */
     private void vincularComponentes() {
         recyclerKdramas = findViewById(R.id.recyclerKdramas);
         layoutEmpty = findViewById(R.id.layoutEmpty);
+        searchKdramas = findViewById(R.id.searchKdramas);
+        fabAgregar = findViewById(R.id.fabAgregar);
+        fabChat = findViewById(R.id.fabChat);
     }
 
-    /**
-     * Configura el RecyclerView con su adaptador y layout manager.
-     * Define el comportamiento al hacer clic en un item.
-     */
     private void configurarRecyclerView() {
         adapter = new KdramaAdapter(kdrama -> navegarAEditarKdrama(kdrama));
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerKdramas.setLayoutManager(layoutManager);
+        recyclerKdramas.setLayoutManager(new LinearLayoutManager(this));
         recyclerKdramas.setAdapter(adapter);
     }
 
     /**
-     * Configura los observadores para los LiveData expuestos por el ViewModel.
-     * Actualiza la interfaz según los cambios en los datos o el estado de las operaciones.
+     * Configura eventos de búsqueda y botón flotante.
      */
+    private void configurarEventos() {
+        // Botón flotante (+) para agregar
+        fabAgregar.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class); // actividad de agregar
+            startActivity(intent);
+        });
+
+        fabChat.setOnClickListener(v -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                // No hay sesión → abrir LoginActivity
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.putExtra("room", "global"); // puede pasar a la sala que quieras
+                startActivity(intent);
+            } else {
+                // Ya hay sesión → abrir ChatActivity directamente
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.putExtra("room", "global");
+                startActivity(intent);
+            }
+        });
+
+
+        // Barra de búsqueda
+        searchKdramas.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filtrarKdramas(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filtrarKdramas(newText);
+                return true;
+            }
+        });
+    }
+
     private void configurarObservadores() {
         kdramaViewModel.kdramas.observe(this, this::actualizarUIConDatos);
 
@@ -116,60 +151,34 @@ public class ListarKdramas extends AppCompatActivity {
         });
     }
 
-    /**
-     * Solicita al ViewModel la carga inicial de datos.
-     */
     private void cargarDatosIniciales() {
         kdramaViewModel.cargarKdramas();
     }
 
-    /**
-     * Actualiza la interfaz según la lista de K-Dramas recibida.
-     * Muestra la lista o el estado vacío según corresponda.
-     *
-     * @param kdramas Lista de K-Dramas obtenida desde el ViewModel.
-     */
     private void actualizarUIConDatos(List<Kdrama> kdramas) {
         if (kdramas == null || kdramas.isEmpty()) {
             mostrarEstadoVacio();
         } else {
+            listaCompleta = kdramas; // guardar lista completa para filtros
             mostrarListaConDatos(kdramas);
         }
     }
 
-    /**
-     * Muestra el estado vacío cuando no hay K-Dramas disponibles.
-     */
     private void mostrarEstadoVacio() {
         recyclerKdramas.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * Muestra la lista de K-Dramas en el RecyclerView.
-     *
-     * @param kdramas Lista de K-Dramas a mostrar.
-     */
     private void mostrarListaConDatos(List<Kdrama> kdramas) {
         layoutEmpty.setVisibility(View.GONE);
         recyclerKdramas.setVisibility(View.VISIBLE);
         adapter.actualizarLista(kdramas);
     }
 
-    /**
-     * Muestra un mensaje de error al usuario mediante un Toast.
-     *
-     * @param mensajeError Texto del mensaje de error.
-     */
     private void mostrarError(String mensajeError) {
         Toast.makeText(this, mensajeError, Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * Navega a la actividad de edición, pasando los datos del K-Drama seleccionado.
-     *
-     * @param kdrama Instancia del K-Drama que se desea editar.
-     */
     private void navegarAEditarKdrama(Kdrama kdrama) {
         Intent intent = new Intent(this, EditarKdrama.class);
         intent.putExtra("id", kdrama.getId());
@@ -180,28 +189,40 @@ public class ListarKdramas extends AppCompatActivity {
         intent.putExtra("calificacion", kdrama.getCalificacion());
         intent.putExtra("finalizado", kdrama.getFinalizado());
         intent.putExtra("imagen_url", kdrama.getImagenUrl());
+        intent.putExtra("url_plataforma", kdrama.getUrlPlataforma()); 
+        intent.putExtra("url_trailer", kdrama.getUrlTrailer());       
         startActivity(intent);
     }
 
-    /**
-     * Maneja el botón de retroceso de la toolbar.
-     * Navega hacia atrás en la pila de actividades.
-     *
-     * @return true si el evento fue manejado correctamente.
-     */
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
 
-    /**
-     * Recarga los datos al reanudar la actividad.
-     * Útil para reflejar cambios realizados en la actividad de edición.
-     */
     @Override
     protected void onResume() {
         super.onResume();
         kdramaViewModel.cargarKdramas();
     }
+
+    /**
+     * Filtra la lista de K-Dramas según el texto ingresado en la barra de búsqueda.
+     *
+     * @param texto Texto ingresado por el usuario.
+     */
+    private void filtrarKdramas(String texto) {
+        if (listaCompleta == null) return;
+
+        List<Kdrama> filtrada = new ArrayList<>();
+        for (Kdrama k : listaCompleta) {
+            if (k.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
+                    k.getGenero().toLowerCase().contains(texto.toLowerCase()) ||
+                    k.getEstadoLegible().toLowerCase().contains(texto.toLowerCase())) {
+                filtrada.add(k);
+            }
+        }
+        adapter.actualizarLista(filtrada);
+    }
 }
+

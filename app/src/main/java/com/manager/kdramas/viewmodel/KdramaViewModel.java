@@ -1,12 +1,16 @@
 package com.manager.kdramas.viewmodel;
 
 import android.app.Application;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.manager.kdramas.repositories.KdramaRepository;
 import com.manager.kdramas.model.Kdrama;
 import java.util.List;
+
+
 
 /**
  * KdramaViewModel - ViewModel que gestiona la lógica de presentación y acceso a datos de K-Dramas.
@@ -33,6 +37,8 @@ public class KdramaViewModel extends AndroidViewModel {
     private final MutableLiveData<String> _errorMessage = new MutableLiveData<>();
     public final LiveData<String> errorMessage = _errorMessage;
 
+
+
     /**
      * Constructor del ViewModel.
      * Inicializa el repositorio con el contexto de aplicación.
@@ -44,10 +50,8 @@ public class KdramaViewModel extends AndroidViewModel {
         kdramaRepository = new KdramaRepository(application);
     }
 
-    /**
-     * Carga todos los K-Dramas desde el repositorio y actualiza el LiveData.
-     * Ejecutado en un hilo secundario para evitar bloquear la UI.
-     */
+
+
     public void cargarKdramas() {
         new Thread(() -> {
             try {

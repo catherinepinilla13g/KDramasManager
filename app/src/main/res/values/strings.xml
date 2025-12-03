@@ -27,4 +27,22 @@
     <string name="lista_de_k_dramas">Lista de K-Dramas</string>
     <string name="editar_k_drama">Editar K-Drama</string>
     <string name="t_tulo_del_k_drama">Título del K-Drama</string>
+    <string name="buscar_kdrama" />
+    <string name="agregar_kdrama" />
+    <string name="imagen_del_k_drama">Imagen del K-Drama</string>
+    <string name="t_tulo_del_k_drama2">Título del K-Drama</string>
+    <string name="g_nero">Género</string>
+    <string name="ver_en_netflix">Ver en Netflix</string>
+    <string name="_2024">2024</string>
+    <string name="_16_cap_tulos">• 16 capítulos</string>
+    <string name="viendo">Viendo</string>
+    <string name="ver_trailer">Ver trailer</string>
+    <string name="default_web_client_id" />
+    <string name="abrir_chat" />
+    <string name="enviar_mensaje" />
+    <string name="escribe_mensaje" />
+    <string name="iniciar_sesi_n_con_google">Iniciar sesión con Google</string>
+    <string name="agregar_contacto" />
+    <string name="ver_perfil" />
+    <string name="menu_opciones" />
 </resources>
