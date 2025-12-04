@@ -28,7 +28,7 @@ import java.util.UUID;
 public class AuthHelper {
 
     private static final int RC_SIGN_IN = 9001;
-    private static UserIdentity identity; // identidad actual en memoria
+    private static UserIdentity identity; 
 
     /**
      * Asegura que exista una sesión anónima si no hay usuario actual.
